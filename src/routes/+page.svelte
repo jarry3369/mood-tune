@@ -1,5 +1,7 @@
 <script>
-  let bgColor = getRandomColor()
+	import { onMount } from 'svelte'
+
+	let bgColor = getRandomColor()
 
   function getRandomColor() {
     let h, s, l
@@ -16,9 +18,31 @@
     bgColor = getRandomColor()
   }
 
-  setInterval(() => {
-    changeColor()
-	  }, 6000)
+  function updateFavicon(hsl) {
+	const size = 64
+	const canvas = document.createElement('canvas')
+	canvas.width = canvas.height = size
+	const ctx = canvas.getContext('2d')
+	if (!ctx) return
+
+	ctx.fillStyle = hsl
+	ctx.fillRect(0, 0, size, size)
+
+	const url = canvas.toDataURL('image/png')
+	const link = document.querySelector("link[rel~='icon']") || document.createElement('link')
+	link.rel = 'icon'
+	link.href = url
+	document.head.appendChild(link)
+	}
+
+	onMount(()=>{
+		updateFavicon(bgColor)
+	})
+
+  	setInterval(() => {
+		changeColor()
+		updateFavicon(bgColor)
+	}, 6000)
 </script>
 
 <style>
@@ -54,6 +78,17 @@
     padding: 0;
   }
 </style>
+
+<svelte:head>
+  <title>taptone</title>
+  <meta name="description" content="mind reset with taptone" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta property="og:title" content="taptone" />
+  <meta property="og:description" content="mind reset with taptone" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://taptone.vercel.app/" />
+</svelte:head>
 
 <div class="container" on:click={changeColor} style="background: {bgColor}">
   <h1 style="color: white">taptone</h1>
