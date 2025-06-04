@@ -1,57 +1,60 @@
 <script>
-	import Counter from '$lib/Counter.svelte';
+  let bgColor = getRandomColor()
+
+  function getRandomColor() {
+    let h, s, l
+	do {
+		h = Math.floor(Math.random() * 360)
+		s = Math.floor(Math.random() * 101)
+		l = Math.floor(Math.random() * 101)
+	} while (l < 15 || l > 90 || s < 20)
+
+	return `hsl(${h}, ${s}%, ${l}%)`
+  }
+
+  function changeColor() {
+    bgColor = getRandomColor()
+  }
+
+  setInterval(() => {
+    changeColor()
+	  }, 6000)
 </script>
 
-<svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
-</svelte:head>
-
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/index.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
-
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
+  :global(html, body) {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+  }
 
-	h1 {
-		width: 100%;
-	}
+  :global(*) {
+    box-sizing: border-box;
+  }
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
+  .container {
+	will-change: background;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 1s;
+    user-select: none;
+    cursor: pointer;
+  }
 
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+  h1 {
+    font-size: 6rem;
+    font-weight: 900;
+    margin: 0;
+    padding: 0;
+  }
 </style>
+
+<div class="container" on:click={changeColor} style="background: {bgColor}">
+  <h1 style="color: white">taptone</h1>
+</div>
